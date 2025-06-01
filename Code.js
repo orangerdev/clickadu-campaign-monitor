@@ -55,6 +55,25 @@ function clickAduGetCampaignsThisMonth() {
 	clickaduCampaign.getCampaigns(minDate, maxDate);
 }
 
+function clickAduGetCampaignsLastMonth() {
+	const clickaduCampaign = new ClickAduCampaigns(SHEET_CAMPAIGN_LAST_MONTH);
+
+	// Mendapatkan tanggal hari ini
+	const today = new Date();
+
+	// Mengatur maxDate ke hari terakhir bulan lalu
+	const maxDate = new Date(today.getFullYear(), today.getMonth() - 1 + 1, 0); // +1 lalu -1 = bulan lalu, 0 = hari terakhir
+	maxDate.setHours(23, 59, 59, 999); // Set ke akhir hari
+
+	// Mengatur minDate ke hari pertama bulan lalu
+	const minDate = new Date(today.getFullYear(), today.getMonth() - 1, 1); // Bulan lalu, tanggal 1
+	minDate.setHours(0, 0, 0, 0); // Set ke awal hari
+
+	Logger.log({ minDate, maxDate });
+
+	clickaduCampaign.getCampaigns(minDate, maxDate);
+}
+
 function clickAduStopCampaigns() {
 	const clickaduCampaign = new ClickAduCampaigns();
 
