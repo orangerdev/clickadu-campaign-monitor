@@ -90,6 +90,8 @@ class ClickAduCampaigns {
 
 	getCampaignStatus(status) {
 		switch (status) {
+			case 5:
+				return "testing";
 			case 6:
 				return "working";
 			case 7:
@@ -130,6 +132,25 @@ class ClickAduCampaigns {
 		range.clearContent();
 	}
 
+	writeCampaign(campaigns) {
+		// write the campaigns start from row 2
+		this.sheetTarget
+			.getRange(2, 1, campaigns.length, 9)
+			.setValues(
+				campaigns.map((campaign) => [
+					campaign.id,
+					campaign.name,
+					campaign.impression,
+					campaign.rate,
+					campaign.spent,
+					campaign.conversion,
+					campaign.cpa,
+					campaign.status,
+					campaign.max,
+				]),
+			);
+	}
+
 	/**
 	 * Get all campaigns data
 	 */
@@ -151,6 +172,7 @@ class ClickAduCampaigns {
 		const paramMinDate = minDate.getFullYear() + ",%0201,%0201";
 
 		let runningCampaigns = 0;
+		let campaigns = [];
 
 		for (let thePage = 1; thePage <= TOTAL_PAGES; thePage++) {
 			const response = this.sendGetRequest("client/campaigns/", {
@@ -225,6 +247,18 @@ class ClickAduCampaigns {
 						Logger.log({ conversion, cpa, spent });
 					}
 
+					campaigns.push({
+						id: campaign.id,
+						name: campaign.name,
+						impression: parseInt(campaign.impressions ?? 0),
+						rate: parseFloat(campaign.rate ?? 0),
+						spent,
+						conversion,
+						cpa,
+						status: this.getCampaignStatus(campaign.status),
+						max,
+					});
+
 					Logger.log({
 						id: campaign.id,
 						name: campaign.name,
@@ -235,27 +269,11 @@ class ClickAduCampaigns {
 						conversion,
 						status: this.getCampaignStatus(campaign.status),
 					});
-
-					const nextRow = this.sheetTarget.getLastRow() + 1;
-
-					this.sheetTarget
-						.getRange(nextRow, 1, 1, 9)
-						.setValues([
-							[
-								campaign.id,
-								campaign.name,
-								parseInt(campaign.impressions ?? 0),
-								parseFloat(campaign.rate ?? 0),
-								spent,
-								conversion,
-								cpa,
-								this.getCampaignStatus(campaign.status),
-								max,
-							],
-						]);
 				}
 			});
 		}
+
+		this.writeCampaign(campaigns);
 
 		Logger.log(`Total running campaigns: ${runningCampaigns}`);
 	}
