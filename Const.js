@@ -10,6 +10,8 @@ const SHEET_STOPCAMPAIGN = SHEET.getSheetByName("STOPCAMPAIGN");
 const SHEET_RERUNCAMPAIGN = SHEET.getSheetByName("RERUNCAMPAIGN");
 const SHEET_LOG = SHEET.getSheetByName("LOG");
 
+const SHEET_CELL_DATE_UPDATE = "O1";
+
 const ENABLE_AUTOMATION = SHEET_CONFIG.getRange("B1").getValue();
 const CLICKADU_TOKEN = SHEET_CONFIG.getRange("B2").getValue();
 const CAMPAIGN_MIN_TIME = SHEET_CONFIG.getRange("B3").getValue();
