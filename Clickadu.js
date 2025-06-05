@@ -39,6 +39,8 @@ class ClickAduCampaigns {
 			muteHttpExceptions: true,
 		});
 
+		Logger.log({ url });
+
 		return JSON.parse(response.getContentText());
 	}
 
@@ -351,5 +353,43 @@ class ClickAduCampaigns {
 				}`,
 			);
 		}
+	}
+
+	getZones(campaignId, dateFrom, dateTill) {
+		const response = this.sendGetRequest("client/stats", {
+			dateFrom,
+			dateTill,
+			groupBy: "zone_id",
+			orderBy: "impressions",
+			orderDest: "desc",
+			page: 1,
+			perPage: 100,
+			campaign_id: [campaignId],
+		});
+
+		const zones = response.result.items.map((item) => {
+			const cpa =
+				item.conversions > 0 ? item.spent / item.conversions : item.spent;
+			return {
+				id: item.zoneId,
+				spent: item.spent,
+				impressions: item.impressions,
+				conversions: item.conversions,
+				cpa,
+			};
+		});
+
+		return zones;
+	}
+
+	excludeZones(campaignId, zones) {
+		const response = this.sendPostRequest(
+			`client/campaigns/${campaignId}/excludeZones/`,
+			{
+				zoneIds: zones,
+			},
+		);
+
+		Logger.log({ response });
 	}
 }

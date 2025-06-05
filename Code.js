@@ -117,3 +117,17 @@ function checkAndUpdateAutomation() {
 		writeLog("Automation enabled: Updated CONFIG B1 to 'y'");
 	}
 }
+
+function clickAduGetCampainZones() {
+	const clickAduCampaign = new ClickAduCampaigns();
+
+	const zones = clickAduCampaign.getZones(
+		"3410554",
+		"2025-06-01",
+		"2025-06-04",
+	);
+
+	zones.forEach((zone) => {
+		Logger.log(zone);
+	});
+}

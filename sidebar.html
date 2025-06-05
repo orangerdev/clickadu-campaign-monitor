@@ -5,16 +5,35 @@
 		<style>
 			body {
 				font-family: Arial, sans-serif;
-				padding: 20px;
+				padding: 8px;
 				margin: 0;
 				background-color: #f5f5f5;
 			}
 
 			.container {
-				background-color: white;
 				border-radius: 8px;
-				padding: 20px;
-				box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+				padding: 0px;
+				display: flex;
+				flex-direction: column;
+				gap: 8px;
+			}
+
+			.card {
+				background-color: #fff;
+				border: 1px solid #e0e0e0;
+				border-radius: 8px;
+				padding: 12px;
+				box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+			}
+
+			.card-title {
+				color: #333;
+				margin: 0 0 20px 0;
+				text-align: center;
+				font-size: 16px;
+				font-weight: bold;
+				border-bottom: 2px solid #4285f4;
+				padding-bottom: 10px;
 			}
 
 			.form-group {
@@ -30,6 +49,7 @@
 
 			input[type="text"],
 			input[type="date"],
+			input[type="number"],
 			select {
 				width: 100%;
 				padding: 8px 12px;
@@ -41,6 +61,7 @@
 
 			input[type="text"]:focus,
 			input[type="date"]:focus,
+			input[type="number"]:focus,
 			select:focus {
 				outline: none;
 				border-color: #4285f4;
@@ -79,11 +100,30 @@
 				cursor: not-allowed;
 			}
 
-			.title {
-				color: #333;
-				margin-bottom: 20px;
-				text-align: center;
-				font-size: 18px;
+			.cpa-btn {
+				background-color: #ff9800;
+			}
+
+			.cpa-btn:hover {
+				background-color: #f57c00;
+			}
+
+			.cpa-btn:disabled {
+				background-color: #ccc;
+				cursor: not-allowed;
+			}
+
+			.stop-zones-btn {
+				background-color: #dc3545;
+			}
+
+			.stop-zones-btn:hover {
+				background-color: #c82333;
+			}
+
+			.stop-zones-btn:disabled {
+				background-color: #ccc;
+				cursor: not-allowed;
 			}
 
 			.status {
@@ -179,74 +219,95 @@
 	</head>
 	<body>
 		<div class="container">
-			<h2 class="title">Zone Monitor</h2>
+			<!-- Zone Monitor Card -->
+			<div class="card">
+				<h2 class="card-title">Zone Monitor</h2>
+				<form id="campaignForm">
+					<div class="form-group">
+						<div class="campaign-header">
+							<label for="campaignId">Campaign ID</label>
+							<button
+								type="button"
+								class="refresh-btn"
+								id="refreshBtn"
+								title="Refresh campaign list">
+								↻ Refresh
+							</button>
+						</div>
+						<select id="campaignId" name="campaignId" required>
+							<option value="">-- Select Campaign --</option>
+							<? for (var i = 0; i < campaignOptions.length; i++) { ?>
+							<option value="<?= campaignOptions[i].id ?>">
+								<?= campaignOptions[i].label ?>
+							</option>
+							<? } ?>
+						</select>
+					</div>
 
-			<form id="campaignForm">
-				<div class="form-group">
-					<div class="campaign-header">
-						<label for="campaignId">Campaign ID</label>
+					<div class="date-buttons">
+						<span class="date-buttons-label">Quick Date Ranges:</span>
+						<div class="date-buttons-grid">
+							<button type="button" class="date-btn" data-range="yesterday">
+								Yesterday
+							</button>
+							<button type="button" class="date-btn" data-range="last2days">
+								Last 2 Days
+							</button>
+							<button type="button" class="date-btn" data-range="last3days">
+								Last 3 Days
+							</button>
+							<button type="button" class="date-btn" data-range="last7days">
+								Last 7 Days
+							</button>
+							<button type="button" class="date-btn" data-range="last30days">
+								Last 30 Days
+							</button>
+							<button type="button" class="date-btn" data-range="last60days">
+								Last 60 Days
+							</button>
+							<button type="button" class="date-btn" data-range="thismonth">
+								This Month
+							</button>
+							<button type="button" class="date-btn" data-range="lastmonth">
+								Last Month
+							</button>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="startDate">Start Date</label>
+						<input type="date" id="startDate" name="startDate" required />
+					</div>
+
+					<div class="form-group">
+						<label for="endDate">End Date</label>
+						<input type="date" id="endDate" name="endDate" required />
+					</div>
+
+					<button type="submit" class="submit-btn" id="submitBtn">
+						Fetch Zone Data
+					</button>
+				</form>
+
+				<div id="status" class="status"></div>
+			</div>
+
+			<!-- Stop Zones Card -->
+			<div class="card">
+				<h2 class="card-title">Stop Zones</h2>
+				<form id="stopZonesForm">
+					<div id="stopZonesContainer">
 						<button
-							type="button"
-							class="refresh-btn"
-							id="refreshBtn"
-							title="Refresh campaign list">
-							↻ Refresh
+							type="submit"
+							class="submit-btn stop-zones-btn"
+							id="stopZonesBtn">
+							Stop Zones
 						</button>
 					</div>
-					<select id="campaignId" name="campaignId" required>
-						<option value="">-- Select Campaign --</option>
-						<? for (var i = 0; i < campaignOptions.length; i++) { ?>
-						<option value="<?= campaignOptions[i].id ?>">
-							<?= campaignOptions[i].label ?>
-						</option>
-						<? } ?>
-					</select>
-				</div>
+				</form>
 
-				<div class="date-buttons">
-					<span class="date-buttons-label">Quick Date Ranges:</span>
-					<div class="date-buttons-grid">
-						<button type="button" class="date-btn" data-range="yesterday">
-							Yesterday
-						</button>
-						<button type="button" class="date-btn" data-range="last2days">
-							Last 2 Days
-						</button>
-						<button type="button" class="date-btn" data-range="last3days">
-							Last 3 Days
-						</button>
-						<button type="button" class="date-btn" data-range="last7days">
-							Last 7 Days
-						</button>
-						<button type="button" class="date-btn" data-range="last30days">
-							Last 30 Days
-						</button>
-						<button type="button" class="date-btn" data-range="last60days">
-							Last 60 Days
-						</button>
-						<button type="button" class="date-btn" data-range="thismonth">
-							This Month
-						</button>
-						<button type="button" class="date-btn" data-range="lastmonth">
-							Last Month
-						</button>
-					</div>
-				</div>
-
-				<div class="form-group">
-					<label for="startDate">Start Date</label>
-					<input type="date" id="startDate" name="startDate" required />
-				</div>
-
-				<div class="form-group">
-					<label for="endDate">End Date</label>
-					<input type="date" id="endDate" name="endDate" required />
-				</div>
-
-				<button type="submit" class="submit-btn" id="submitBtn">Submit</button>
-			</form>
-
-			<div id="status" class="status"></div>
+				<div id="stopZonesStatus" class="status"></div>
+			</div>
 		</div>
 
 		<script>
@@ -317,6 +378,7 @@
 					case "thismonth":
 						startDate = new Date(today.getFullYear(), today.getMonth(), 1);
 						endDate = new Date(today);
+						endDate.setDate(today.getDate() - 1);
 						break;
 
 					case "lastmonth":
@@ -448,22 +510,146 @@
 					// Call the server-side function
 					google.script.run
 						.withSuccessHandler(function (result) {
-							showStatus(
-								"Data successfully updated to spreadsheet!",
-								"success",
-							);
+							showStatus("Zone data successfully loaded!", "success");
 							submitBtn.disabled = false;
-							submitBtn.textContent = "Submit";
-
-							// Optional: Clear the form
-							// document.getElementById('campaignForm').reset();
+							submitBtn.textContent = "Fetch Zone Data";
 						})
 						.withFailureHandler(function (error) {
 							showStatus("Error: " + error.message, "error");
 							submitBtn.disabled = false;
-							submitBtn.textContent = "Submit";
+							submitBtn.textContent = "Fetch Zone Data";
 						})
 						.updateCampaignData(campaignId, startDate, endDate);
+				});
+
+					e.preventDefault();
+
+					const maxCpa = document.getElementById("maxCpa").value;
+					const cpaSubmitBtn = document.getElementById("cpaSubmitBtn");
+					const cpaStatusDiv = document.getElementById("cpaStatus");
+
+					// Validate maxCpa
+					if (!maxCpa || isNaN(maxCpa) || parseFloat(maxCpa) <= 0) {
+						showCpaStatus(
+							"Please enter a valid positive number for Maximum CPA",
+							"error",
+						);
+						return;
+					}
+
+					// Disable submit button
+					cpaSubmitBtn.disabled = true;
+					cpaSubmitBtn.textContent = "Applying...";
+
+					// Hide previous status
+					cpaStatusDiv.style.display = "none";
+
+					// Call the server-side function
+					google.script.run
+						.withSuccessHandler(function (result) {
+							showCpaStatus(
+								"CPA highlighting applied successfully!",
+								"success",
+							);
+							cpaSubmitBtn.disabled = false;
+							cpaSubmitBtn.textContent = "Apply CPA Highlighting";
+						})
+						.withFailureHandler(function (error) {
+							showCpaStatus("Error: " + error.message, "error");
+							cpaSubmitBtn.disabled = false;
+							cpaSubmitBtn.textContent = "Apply CPA Highlighting";
+						})
+						.applyCpaHighlighting(maxCpa);
+				});
+
+			// Stop Zones Button Event Listener (changed from form submit to button click)
+			document
+				.getElementById("stopZonesForm")
+				.addEventListener("submit", function (e) {
+					e.preventDefault();
+					e.stopPropagation();
+
+			                 console.log("Stop Zones form submitted");
+
+					const stopZonesBtn = document.getElementById("stopZonesBtn");
+					const stopZonesStatusDiv = document.getElementById("stopZonesStatus");
+
+					// Check if button is already disabled to prevent double-clicks
+					if (stopZonesBtn.disabled) {
+						return false;
+					}
+
+					// Disable submit button
+					stopZonesBtn.disabled = true;
+					stopZonesBtn.textContent = "Processing...";
+
+					// Hide previous status
+					stopZonesStatusDiv.style.display = "none";
+
+					// Direct call without setTimeout (simpler approach)
+					try {
+						google.script.run
+							.withSuccessHandler(function (result) {
+								console.log("Stop Zones success:", result);
+								showStopZonesStatus(
+									result.message || "Zones stopped successfully!",
+									"success",
+								);
+								stopZonesBtn.disabled = false;
+								stopZonesBtn.textContent = "Stop Zones";
+							})
+							.withFailureHandler(function (error) {
+								console.error("Stop Zones error:", error);
+								showStopZonesStatus("Error: " + error.message, "error");
+								stopZonesBtn.disabled = false;
+								stopZonesBtn.textContent = "Stop Zones";
+							})
+							.stopZones();
+					} catch (error) {
+						console.error("Stop Zones call error:", error);
+						showStopZonesStatus(
+							"Error calling function: " + error.message,
+							"error",
+						);
+						stopZonesBtn.disabled = false;
+						stopZonesBtn.textContent = "Stop Zones";
+					}
+
+					return false;
+				});
+
+			// Test Stop Zones Button Event Listener
+			document
+				.getElementById("testStopZonesBtn")
+				.addEventListener("click", function (e) {
+					e.preventDefault();
+
+					const testBtn = document.getElementById("testStopZonesBtn");
+					const statusDiv = document.getElementById("stopZonesStatus");
+
+					// Disable test button
+					testBtn.disabled = true;
+					testBtn.textContent = "Testing...";
+
+					// Hide previous status
+					statusDiv.style.display = "none";
+
+					// Call the test server-side function
+					google.script.run
+						.withSuccessHandler(function (result) {
+							showStopZonesStatus(
+								"Test successful: " + result.message,
+								"success",
+							);
+							testBtn.disabled = false;
+							testBtn.textContent = "Test Stop Zones";
+						})
+						.withFailureHandler(function (error) {
+							showStopZonesStatus("Test failed: " + error.message, "error");
+							testBtn.disabled = false;
+							testBtn.textContent = "Test Stop Zones";
+						})
+						.testStopZones();
 				});
 
 			function showStatus(message, type) {
@@ -477,6 +663,34 @@
 					setTimeout(function () {
 						statusDiv.style.display = "none";
 					}, 3000);
+				}
+			}
+
+			function showCpaStatus(message, type) {
+				const statusDiv = document.getElementById("cpaStatus");
+				statusDiv.textContent = message;
+				statusDiv.className = "status " + type;
+				statusDiv.style.display = "block";
+
+				// Auto hide success message after 3 seconds
+				if (type === "success") {
+					setTimeout(function () {
+						statusDiv.style.display = "none";
+					}, 3000);
+				}
+			}
+
+			function showStopZonesStatus(message, type) {
+				const statusDiv = document.getElementById("stopZonesStatus");
+				statusDiv.textContent = message;
+				statusDiv.className = "status " + type;
+				statusDiv.style.display = "block";
+
+				// Auto hide success message after 5 seconds (longer for stop zones as it's important)
+				if (type === "success") {
+					setTimeout(function () {
+						statusDiv.style.display = "none";
+					}, 5000);
 				}
 			}
 		</script>
