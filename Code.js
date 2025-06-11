@@ -62,6 +62,19 @@ function clickAduGetCampaignsLast7Days() {
 	clickaduCampaign.getCampaigns(minDate, maxDate);
 }
 
+function clickAduGetCampaignsLast30Days() {
+	const clickaduCampaign = new ClickAduCampaigns(SHEET_CAMPAIGN_LAST_30DAYS);
+
+	const maxDate = new Date(CAMPAIGN_MAX_TIME);
+
+	const minDate = new Date(maxDate);
+	minDate.setDate(minDate.getDate() - 30); // Mengurangi 30 hari dari maxDate
+
+	updateLastUpdate(SHEET_CAMPAIGN_LAST_30DAYS);
+
+	clickaduCampaign.getCampaigns(minDate, maxDate);
+}
+
 function clickAduGetCampaignsThisMonth() {
 	const clickaduCampaign = new ClickAduCampaigns(SHEET_CAMPAIGN_THIS_MONTH);
 
