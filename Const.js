@@ -2,6 +2,7 @@ const SHEET = SpreadsheetApp.getActiveSpreadsheet();
 const SHEET_CONFIG = SHEET.getSheetByName("CONFIG");
 const SHEET_CAMPAIGN = SHEET.getSheetByName("CAMPAIGN");
 const SHEET_CAMPAIGN_YESTERDAY = SHEET.getSheetByName("YESTERDAY");
+const SHEET_CAMPAIGN_LAST_2DAYS = SHEET.getSheetByName("LAST2");
 const SHEET_CAMPAIGN_LAST_3DAYS = SHEET.getSheetByName("LAST3");
 const SHEET_CAMPAIGN_LAST_7DAYS = SHEET.getSheetByName("LAST7");
 const SHEET_CAMPAIGN_LAST_30DAYS = SHEET.getSheetByName("LAST30");
