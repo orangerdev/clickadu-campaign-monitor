@@ -88,6 +88,19 @@ function clickAduGetCampaignsLast30Days() {
 	clickaduCampaign.getCampaigns(minDate, maxDate);
 }
 
+function clickAduGetCampaignsLast60Days() {
+	const clickaduCampaign = new ClickAduCampaigns(SHEET_CAMPAIGN_LAST_60DAYS);
+
+	const maxDate = new Date(CAMPAIGN_MAX_TIME);
+
+	const minDate = new Date(maxDate);
+	minDate.setDate(minDate.getDate() - 60); // Mengurangi 60 hari dari maxDate
+
+	updateLastUpdate(SHEET_CAMPAIGN_LAST_60DAYS);
+
+	clickaduCampaign.getCampaigns(minDate, maxDate);
+}
+
 function clickAduGetCampaignsThisMonth() {
 	const clickaduCampaign = new ClickAduCampaigns(SHEET_CAMPAIGN_THIS_MONTH);
 
@@ -118,6 +131,27 @@ function clickAduGetCampaignsLastMonth() {
 	Logger.log({ minDate, maxDate });
 
 	updateLastUpdate(SHEET_CAMPAIGN_LAST_MONTH);
+
+	clickaduCampaign.getCampaigns(minDate, maxDate);
+}
+
+function clickAduGetCampaignsLas2MonthsAgo() {
+	const clickaduCampaign = new ClickAduCampaigns(SHEET_CAMPAIGN_LAST_2_MONTH);
+
+	// Mendapatkan tanggal hari ini
+	const today = new Date();
+
+	// Mendapatkan tangal akhir 2 bulan yang lalu
+	const maxDate = new Date(today.getFullYear(), today.getMonth() - 2 + 1, 0);
+	maxDate.setHours(23, 59, 59, 999); // Set ke akhir hari
+
+	// Mendapatkan tanggal awal 2 bulan yang lalu
+	const minDate = new Date(today.getFullYear(), today.getMonth() - 2, 1);
+	minDate.setHours(0, 0, 0, 0); // Set ke awal hari
+
+	Logger.log({ minDate, maxDate });
+
+	updateLastUpdate(SHEET_CAMPAIGN_LAST_2_MONTH);
 
 	clickaduCampaign.getCampaigns(minDate, maxDate);
 }

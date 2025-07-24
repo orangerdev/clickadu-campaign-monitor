@@ -246,13 +246,13 @@ class ClickAduCampaigns {
 					if (conversion === 0) {
 						cpa = spent;
 
-						Logger.log({ conversion, cpa, spent });
+						Logger.log({test: "Conversion Zero", conversion, cpa, spent });
 					}
 
 					campaigns.push({
 						id: campaign.id,
 						name: campaign.name,
-						impression: parseInt(campaign.impressions ?? 0),
+						impression: campaign.impressions,
 						rate: parseFloat(campaign.rate ?? 0),
 						spent,
 						conversion,
@@ -262,6 +262,7 @@ class ClickAduCampaigns {
 					});
 
 					Logger.log({
+            test: "Campaign push",
 						id: campaign.id,
 						name: campaign.name,
 						rate: parseFloat(campaign.rate ?? 0),
